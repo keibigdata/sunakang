@@ -1,0 +1,43 @@
+{\rtf1\ansi\ansicpg949\cocoartf1504\cocoasubrtf810
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 libname suna "/folders/myshortcuts/NHRD_data";\
+\
+data sub_one;\
+set suna.t2_infectious_2013_episode0;\
+drop sub_sick;\
+rename main_sick = sick;\
+run;\
+\
+data sub_two;\
+set suna.t2_infectious_2013_episode0;\
+if sub_sick = " " then delete;\
+drop main_sick;\
+rename sub_sick = sick;\
+run;\
+\
+data total;\
+set sub_one sub_two;\
+run;\
+\
+proc sql;\
+create table work.total as\
+select a.*\
+from work.total as a\
+where a.sick like 'A%' or a.sick like 'B%';\
+RUN;\
+quit;\
+\
+/* data download*/\
+\
+proc export data=work.three\
+			outfile=_dataout\
+			dbms=csv replace;\
+run;\
+\
+%let _dataout_name_type=text/csv;\
+%let _dataout_name=t2_infectious_2013_episode0_update.csv;}
